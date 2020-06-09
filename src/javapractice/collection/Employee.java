@@ -83,7 +83,7 @@ public class Employee implements Comparable<Employee>{
     }
 
     public static void main(String[] args) {
-        Employee e = new Employee(2,"raj","peopleStrong");
+        Employee e = new Employee(2,"raj","peopleStrong1");
         Employee e2 = new Employee(1,"deshraj","peopleStrong");
         if(e.equals(e2)){
             System.out.println("equal"+" its hashCode : "+(e.hashCode() == e2.hashCode()));
@@ -96,5 +96,11 @@ public class Employee implements Comparable<Employee>{
         System.out.println("before sorting  :"+employeeList.toString());
         Collections.sort(employeeList,(em1,em2)->em1.getEmpName().compareTo(em2.getEmpName()));
         System.out.println("after  sorting  :"+employeeList.toString());
+
+        //sorting
+        Collections.sort(employeeList,(emp1,emp2)->emp1.getEmpId()<emp2.getEmpId()? 1: -1); // decreasing
+        System.out.println("bese on emp id sorting "+employeeList.toString());
+        Collections.sort(employeeList,(emp1,emp2)->emp1.getCompanyName().compareTo(emp2.getCompanyName()));
+        System.out.println("bese on CompanyName sorting "+employeeList.toString());
     }
 }
