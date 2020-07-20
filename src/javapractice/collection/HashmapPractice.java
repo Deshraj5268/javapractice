@@ -85,7 +85,7 @@ public class HashmapPractice {
             System.out.println(sortMap.getKey()+" : "+sortMap.getValue());
         }
 
-        /*TreeMap treeMap = new TreeMap(new Comparator<Map.Entry<String, String>>() {
+        /*TreeMapPractice treeMap = new TreeMapPractice(new Comparator<Map.Entry<String, String>>() {
             @Override
             public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
                 return o1.getValue().compareTo(o2.getValue());
@@ -95,13 +95,13 @@ public class HashmapPractice {
         treeMap.putAll(map);
 
         Set<Map.Entry<Integer,String>> entrySet = treeMap.entrySet();
-        System.out.println("sorted Map based on Value using TreeMap : ");
+        System.out.println("sorted Map based on Value using TreeMapPractice : ");
         for (Map.Entry<Integer,String> sortMap:entrySet){
             System.out.println(sortMap.getKey()+" : "+sortMap.getValue());
         }*/
 
 
-        //TreeMap treeMap = new TreeMap(Comparator<Map.Entry> o1)
+        //TreeMapPractice treeMap = new TreeMapPractice(Comparator<Map.Entry> o1)
 
         /*ArrayList<String> arrayList = new ArrayList<>(map.values());
         Collections.sort(arrayList);
