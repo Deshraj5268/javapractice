@@ -1,4 +1,4 @@
-package javapractice.multithreading;
+package javapractice.multithreading.producer_consumer;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -14,8 +14,8 @@ class Producer implements Runnable {
     }
 
     private void produce(int i) {
-        while (queue.size() == size) {
-            synchronized (queue) {
+        synchronized (queue) {
+            while (queue.size() == size) {
                 System.out.println("queue is full " + queue.size());
                 try {
                     queue.wait();
@@ -51,8 +51,8 @@ class Consumer implements Runnable{
     }
 
     private int consume() throws InterruptedException{
-        while (queue.isEmpty()){
-            synchronized (queue){
+        synchronized (queue){
+            while (queue.isEmpty()){
                 System.out.println("item can not be consumed  because queue size : "+queue.size());
                 queue.wait();
             }
@@ -62,7 +62,7 @@ class Consumer implements Runnable{
             queue.notifyAll();
             return queue.poll();
         }
-}
+    }
 
     @Override
     public void run(){
