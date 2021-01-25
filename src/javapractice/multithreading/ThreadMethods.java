@@ -29,8 +29,10 @@ public class ThreadMethods {
 
 
         myJoinThread1.start();
-        myJoinThread2.start();
         myJoinThread1.join();
+        System.out.println("after join");
+        myJoinThread2.start();
+
 
 
 

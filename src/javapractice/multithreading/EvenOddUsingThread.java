@@ -1,5 +1,7 @@
 package javapractice.multithreading;
 
+import java.util.concurrent.Semaphore;
+
 class EvenOdd{
 
     private int count;
@@ -57,10 +59,97 @@ class EvenOdd{
     }
 }
 
+class ThreadMyOvenOdd implements Runnable{
+
+    private int count;
+    private volatile int max;
+    private volatile boolean even;
+
+    public ThreadMyOvenOdd(int count, int max, boolean even) {
+        this.count = count;
+        this.max = max;
+        this.even = even;
+    }
+
+    @Override
+    public void run() {
+
+        while (count <= max)
+        if("even".equals(Thread.currentThread().getName()) && even){
+
+            synchronized (this){
+                System.out.println("even : " +this.count);
+                count++;
+                even = false;
+            }
+        }else if("odd".equals(Thread.currentThread().getName()) && !even){
+
+            synchronized (this){
+                System.out.println("odd : "+ this.count);
+                count++;
+                even = true;
+            }
+        }
+
+    }
+}
+
+class EvenOddThreadSemaphore{
+    int flag;
+    int count;
+    int max;
+    Semaphore semaphore;
+    Semaphore mutex;
+
+    public EvenOddThreadSemaphore(int flag, int count, int max, Semaphore semaphore,Semaphore mutex) {
+        this.flag = flag;
+        this.count = count;
+        this.max = max;
+        this.semaphore = semaphore;
+        this.mutex = mutex;
+    }
+
+    public void evenPrintSemaphore(){
+        while (count<=max) {
+            try {
+                mutex.acquire();
+               // System.out.print(Thread.currentThread().getName() + " entered : ");
+                if(count % 2 == 0) {
+                    semaphore.acquire();
+                    System.out.println(Thread.currentThread().getName() + " :" + count);
+                    count++;
+                    semaphore.release();
+                }
+                mutex.release();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void oddPrintSemaphore(){
+        while (count<=max) {
+            try {
+                mutex.acquire();
+              //  System.out.print(Thread.currentThread().getName() + " entered : ");
+                if(count % 2 != 0) {
+                    semaphore.acquire();
+                    System.out.println(Thread.currentThread().getName() + " :" + count);
+                    count++;
+                    semaphore.release();
+                }
+                mutex.release();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
 public class EvenOddUsingThread {
 
     public static void main(String[] args) {
-        int count = 5;
+        /*int count = 5;
         boolean odd = false;
         if(count % 2 == 1){
             odd = true;
@@ -85,7 +174,23 @@ public class EvenOddUsingThread {
         );
 
         evenThread.start();
-        oddThread.start();
+        oddThread.start();*/
+        /*int count=0;
+        boolean evenflag= true;
+        int max=9;
+        ThreadMyOvenOdd  evenThread = new ThreadMyOvenOdd(count,max,evenflag);
+
+        Thread even = new Thread(evenThread,"even");
+        Thread odd = new Thread(evenThread,"odd");
+        even.start();
+        odd.start();*/
+
+        EvenOddThreadSemaphore evenOddThreadSemaphore = new EvenOddThreadSemaphore(0,0,
+                10,new Semaphore(1),new Semaphore(1));
+        Thread evenT = new Thread(() -> evenOddThreadSemaphore.evenPrintSemaphore(),"even");
+        Thread oddT = new Thread(() -> evenOddThreadSemaphore.oddPrintSemaphore(),"odd");
+        evenT.start();
+        oddT.start();
 
 
     }

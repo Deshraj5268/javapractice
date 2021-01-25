@@ -10,7 +10,6 @@ abstract class BaseHealthCheckUp implements Runnable{
 
     private CountDownLatch latch;
     private String serviceName;
-    private boolean isServiceUp;
 
     public BaseHealthCheckUp(String serviceName,CountDownLatch latch){
         this.serviceName = serviceName;
@@ -20,12 +19,12 @@ abstract class BaseHealthCheckUp implements Runnable{
     @Override
     public void run(){
         try {
+            System.out.println("thread : "+Thread.currentThread().getName());
             verifyService();
-            isServiceUp = true;
             Thread.sleep(1000);
         }catch (InterruptedException ex){
             System.out.println(ex.getMessage());
-            isServiceUp = false;
+           // isServiceUp = false;
         }finally {
             if(latch != null) {
                 latch.countDown(); //while exception latch should be down otherwise deadlock can occur
@@ -37,14 +36,14 @@ abstract class BaseHealthCheckUp implements Runnable{
         return serviceName;
     }
 
-    public boolean isServiceUp() {
-        return isServiceUp;
-    }
+    public abstract boolean isServiceUp();
 
     public abstract void verifyService();
 }
 
 class NetworkHealthCheckUp extends BaseHealthCheckUp {
+
+    private boolean isServiceUp;
 
     public NetworkHealthCheckUp(CountDownLatch latch){
         super("networkService",latch);
@@ -58,12 +57,20 @@ class NetworkHealthCheckUp extends BaseHealthCheckUp {
             Thread.sleep(100);
         }catch (InterruptedException ex){
             System.out.println(ex.getMessage());
+            return;
         }
         System.out.println(this.getServiceName()+" service is up now ...");
+        isServiceUp = true;
+    }
+
+    @Override
+    public boolean isServiceUp() {
+        return isServiceUp;
     }
 }
 
 class DatabaseHealthCheckUp extends BaseHealthCheckUp {
+    private boolean isServiceUp;
 
     public DatabaseHealthCheckUp(CountDownLatch latch){
         super("dataBaseService",latch);
@@ -73,11 +80,18 @@ class DatabaseHealthCheckUp extends BaseHealthCheckUp {
     public void verifyService(){
         System.out.println("checking status for : "+this.getServiceName());
         try{
-            Thread.sleep(100);
+            Thread.sleep(1000);
         }catch (InterruptedException ex){
             System.out.println(ex.getMessage());
+            return;
         }
         System.out.println(this.getServiceName()+" service is up now ...");
+        isServiceUp = true;
+    }
+
+    @Override
+    public boolean isServiceUp() {
+        return isServiceUp;
     }
 
 }
